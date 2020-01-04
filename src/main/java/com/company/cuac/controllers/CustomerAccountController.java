@@ -21,7 +21,6 @@ public class CustomerAccountController {
 
     @PostMapping({"/save", "/update"})
     public CustomerAccount save(@RequestBody CustomerAccountCommand customerAccountCommand) {
-        customerAccountService.saveOrUpdateCustomerAccountCommand(customerAccountCommand);
         return customerAccountService.saveOrUpdateCustomerAccountCommand(customerAccountCommand);
     }
 

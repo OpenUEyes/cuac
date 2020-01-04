@@ -11,7 +11,7 @@ import org.springframework.data.redis.core.RedisHash;
 @AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@RedisHash("customer-account")
+@RedisHash("account")
 public class CustomerAccount {
     @Id
     private String id;
