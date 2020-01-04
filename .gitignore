@@ -1,0 +1,30 @@
+#####################################
+
+!.mvn/wrapper/maven-wrapper.jar
+
+target/
+out/
+logs/
+*.log
+*.gz
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### VS Code ###
+.vscode/
+
+### Package Files ###
+#*.jar
+#*.war
+*.ear
+
+### Content ###
+.jpg
+.png
+
+### Other ##
+.mvn
