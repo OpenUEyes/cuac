@@ -20,7 +20,7 @@ public class CustomerAccountController {
     }
 
     @PostMapping({"/save", "/update"})
-    public CustomerAccount save(@RequestBody CustomerAccountCommand customerAccountCommand) {
+    public CustomerAccount saveOrUpdate(@RequestBody CustomerAccountCommand customerAccountCommand) {
         return customerAccountService.saveOrUpdateCustomerAccountCommand(customerAccountCommand);
     }
 
@@ -29,8 +29,8 @@ public class CustomerAccountController {
         return customerAccountService.listAll();
     }
 
-    @PostMapping("/get/{id}")
-    public CustomerAccount get(@PathVariable String id) {
+    @GetMapping("/get/{id}")
+    public CustomerAccount getById(@PathVariable String id) {
         return customerAccountService.getById(id);
     }
 
