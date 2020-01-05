@@ -37,8 +37,7 @@ public class CustomerAccountServiceImpl implements CustomerAccountService {
 
     @Override
     public CustomerAccount saveOrUpdate(CustomerAccount account) {
-        customerAccountRepository.save(account);
-        return account;
+        return customerAccountRepository.save(account);
     }
 
     @Override
