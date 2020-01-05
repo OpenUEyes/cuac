@@ -41,6 +41,6 @@ public class CustomerAccountController {
     @PostMapping("/delete/{id}")
     public String deleteById(@PathVariable String id) {
         customerAccountService.deleteById(id);
-        return "redirect://account/list";
+        return "redirect:/account/list";
     }
 }
