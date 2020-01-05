@@ -10,9 +10,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -63,9 +66,41 @@ class CustomerAccountControllerTest {
         final int accountId = 1;
 
         this.mockMvc.perform(get("/account/get/" + accountId)
-                .content("1"))
+                .content("" + accountId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(containsString(mapper.writeValueAsString(account))));
+    }
+
+    @Test
+    public void listAll() throws Exception {
+        List<CustomerAccount> customerAccountList = new ArrayList<>();
+        for (int i = 1; i < 5; i++) {
+            CustomerAccount account = CustomerAccount.builder()
+                    .id("" + i)
+                    .login("login" + i)
+                    .password("password" + i)
+                    .email("email@email" + i)
+                    .imageURL("url" + i)
+                    .build();
+            customerAccountList.add(account);
+        }
+
+        when(customerAccountService.listAll()).thenReturn(customerAccountList);
+
+        this.mockMvc.perform(get("/account/list"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(containsString(mapper.writeValueAsString(customerAccountList))));
+    }
+
+    @Test
+    public void deleteById() throws Exception {
+        doNothing().when(customerAccountService).deleteById(anyString());
+
+        final int accountId = 1;
+        this.mockMvc.perform(post("/account/delete/" + accountId)
+                .content("" + accountId))
+                .andExpect(status().is3xxRedirection());
     }
 }

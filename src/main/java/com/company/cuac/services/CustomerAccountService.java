@@ -15,5 +15,5 @@ public interface CustomerAccountService {
 
     CustomerAccount saveOrUpdateCustomerAccountCommand(CustomerAccountCommand command);
 
-    void delete(String id);
+    void deleteById(String id);
 }
