@@ -28,3 +28,8 @@ logs/
 
 ### Other ##
 .mvn/
+gradle
+/gradlew.bat
+/gradlew
+/build/
+/.gradle/
