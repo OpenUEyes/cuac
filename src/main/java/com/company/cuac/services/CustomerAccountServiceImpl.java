@@ -1,7 +1,7 @@
 package com.company.cuac.services;
 
 import com.company.cuac.commands.CustomerAccountCommand;
-import com.company.cuac.converters.CustomerAccountCommandToCustomerAccountConverter;
+import com.company.cuac.converters.CustomerAccountCustomerAccountCommandConverter;
 import com.company.cuac.model.CustomerAccount;
 import com.company.cuac.repositories.CustomerAccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CustomerAccountServiceImpl implements CustomerAccountService {
 
-    private final CustomerAccountCommandToCustomerAccountConverter commandToModel;
+    private final CustomerAccountCustomerAccountCommandConverter mapper;
     private final CustomerAccountRepository customerAccountRepository;
 
     @Override
@@ -37,7 +37,7 @@ public class CustomerAccountServiceImpl implements CustomerAccountService {
 
     @Override
     public CustomerAccount saveOrUpdateCustomerAccountCommand(CustomerAccountCommand command) {
-        return saveOrUpdate(commandToModel.convert(command));
+        return saveOrUpdate(mapper.commandToModel(command));
     }
 
     @Override

@@ -2,7 +2,10 @@ plugins {
     id 'org.springframework.boot' version '2.2.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'java'
+    id 'net.ltgt.apt-idea' version '0.20'
 }
+
+apply plugin: 'net.ltgt.apt-idea'
 
 group = 'com.company.cuac'
 version = '0.0.1-SNAPSHOT'
@@ -12,6 +15,13 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+}
+
+compileJava {
+    options.compilerArgs = [
+            '-Amapstruct.suppressGeneratorTimestamp=true',
+            '-Amapstruct.suppressGeneratorVersionInfoComment=true'
+    ]
 }
 
 repositories {
@@ -26,6 +36,10 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+
+    implementation "org.mapstruct:mapstruct:1.2.0.Final"
+    annotationProcessor "org.mapstruct:mapstruct-processor:1.2.0.Final"
+    testAnnotationProcessor "org.mapstruct:mapstruct-processor:1.2.0.Final"
 }
 
 test {
