@@ -1,9 +1,10 @@
 package com.company.cuac.services;
 
 import com.company.cuac.commands.CustomerAccountCommand;
-import com.company.cuac.converters.CustomerAccountCommandToCustomerAccount;
+import com.company.cuac.converters.CustomerAccountCommandToCustomerAccountConverter;
 import com.company.cuac.model.CustomerAccount;
 import com.company.cuac.repositories.CustomerAccountRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,17 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CustomerAccountServiceImpl implements CustomerAccountService {
 
-    private CustomerAccountCommandToCustomerAccount commandToModel;
-    private CustomerAccountRepository customerAccountRepository;
-
-    @Autowired
-    public CustomerAccountServiceImpl(CustomerAccountCommandToCustomerAccount commandToModel,
-                                      CustomerAccountRepository customerAccountRepository) {
-        this.commandToModel = commandToModel;
-        this.customerAccountRepository = customerAccountRepository;
-    }
+    private final CustomerAccountCommandToCustomerAccountConverter commandToModel;
+    private final CustomerAccountRepository customerAccountRepository;
 
     @Override
     public List<CustomerAccount> listAll() {

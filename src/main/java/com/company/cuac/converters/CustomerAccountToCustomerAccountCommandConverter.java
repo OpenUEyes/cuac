@@ -6,11 +6,12 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomerAccountToCustomerAccountCommand implements Converter<CustomerAccount, CustomerAccountCommand> {
+public class CustomerAccountToCustomerAccountCommandConverter implements Converter<CustomerAccount, CustomerAccountCommand> {
 
     @Override
     public CustomerAccountCommand convert(CustomerAccount customerAccount) {
         CustomerAccountCommand customerAccountCommand = new CustomerAccountCommand();
+
         customerAccountCommand.setId(customerAccount.getId());
         customerAccountCommand.setLogin(customerAccount.getLogin());
         customerAccountCommand.setPassword(customerAccount.getPassword());
