@@ -47,9 +47,9 @@ class CustomerAccountServiceImplTest {
 
     @Test
     void getById() {
-        final int accountId = 1;
+        final String accountId = "1";
         CustomerAccount expected = CustomerAccount.builder()
-                .id("" + accountId)
+                .id(accountId)
                 .login("login")
                 .password("password")
                 .email("email@email")

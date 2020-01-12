@@ -14,8 +14,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -23,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+//@Disabled("Redis db can't start at windows")
 public class CustomerAccountIT {
 
     @Autowired
@@ -35,8 +40,8 @@ public class CustomerAccountIT {
     private CustomerAccountRepository repository;
 
     @Test
-    public void saveOrUpdate() throws Exception {
-        CustomerAccount savedAccount = CustomerAccount.builder()
+    public void saveOrUpdateWorksThroughAllLayers() throws Exception {
+        CustomerAccount expectedAccount = CustomerAccount.builder()
                 .id("1")
                 .login("login")
                 .password("password")
@@ -46,33 +51,42 @@ public class CustomerAccountIT {
 
         this.mockMvc.perform(post("/account/save")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(savedAccount)))
+                .content(mapper.writeValueAsString(expectedAccount)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(containsString(mapper.writeValueAsString(savedAccount))));
+                .andExpect(content().string(containsString(mapper.writeValueAsString(expectedAccount))));
+
+        Optional<CustomerAccount> savedAccount = repository.findById(expectedAccount.getId());
+
+        assertTrue(savedAccount.isPresent());
+        assertThat(savedAccount.get()).isEqualTo(expectedAccount);
     }
 
     @Test
-    public void getById() throws Exception {
+    public void getByIdWorksThroughAllLayers() throws Exception {
+        final String accountId = "1";
+
         CustomerAccount account = CustomerAccount.builder()
-                .id("1")
+                .id(accountId)
                 .login("login")
                 .password("password")
                 .email("email@email")
                 .imageURL("url")
                 .build();
 
-        final int accountId = 1;
+        repository.save(account);
 
         this.mockMvc.perform(get("/account/get/" + accountId)
-                .content("" + accountId))
+                .content(accountId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(containsString(mapper.writeValueAsString(account))));
+
+        assertTrue(repository.existsById(accountId));
     }
 
     @Test
-    public void listAll() throws Exception {
+    public void listAllWorksThroughAllLayers() throws Exception {
         List<CustomerAccount> customerAccountList = new ArrayList<>();
         for (int i = 1; i < 5; i++) {
             CustomerAccount account = CustomerAccount.builder()
@@ -89,14 +103,30 @@ public class CustomerAccountIT {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(containsString(mapper.writeValueAsString(customerAccountList))));
+
+        ArrayList<CustomerAccount> listAll = (ArrayList<CustomerAccount>) repository.findAll();
+        assertTrue(listAll.containsAll(customerAccountList));
     }
 
     @Test
-    public void deleteById() throws Exception {
-        final int accountId = 1;
+    public void deleteByIdWorksThroughAllLayers() throws Exception {
+        final String accountId = "1";
+        CustomerAccount account = CustomerAccount.builder()
+                .id(accountId)
+                .login("login")
+                .password("password")
+                .email("email@email")
+                .imageURL("url")
+                .build();
+
+        repository.save(account);
+        assertTrue(repository.existsById(accountId));
+
         this.mockMvc.perform(post("/account/delete/" + accountId)
-                .content("" + accountId))
+                .content(accountId))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/account/list"));
+
+        assertFalse(repository.existsById(accountId));
     }
 }
