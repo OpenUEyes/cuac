@@ -99,6 +99,8 @@ public class CustomerAccountIT {
             customerAccountList.add(account);
         }
 
+        repository.saveAll(customerAccountList);
+
         this.mockMvc.perform(get("/account/list"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
