@@ -79,7 +79,7 @@ class CustomerAccountControllerTest {
                     .id("" + i)
                     .login("login" + i)
                     .password("password" + i)
-                    .email("email@email" + i)
+                    .email("email" + i + "@mail.com")
                     .imageURL("url" + i)
                     .build();
             customerAccountList.add(account);
