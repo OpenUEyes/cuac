@@ -5,14 +5,13 @@ import com.company.cuac.converters.CustomerAccountCustomerAccountCommandConverte
 import com.company.cuac.model.CustomerAccount;
 import com.company.cuac.repositories.CustomerAccountRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class CustomerAccountServiceImpl implements CustomerAccountService {
 
     private final CustomerAccountCustomerAccountCommandConverter mapper;

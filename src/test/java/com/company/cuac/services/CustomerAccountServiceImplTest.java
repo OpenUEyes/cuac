@@ -1,12 +1,12 @@
 package com.company.cuac.services;
 
 import com.company.cuac.commands.CustomerAccountCommand;
-import com.company.cuac.converters.CustomerAccountCustomerAccountCommandConverter;
 import com.company.cuac.converters.CustomerAccountCustomerAccountCommandConverterImpl;
 import com.company.cuac.model.CustomerAccount;
 import com.company.cuac.repositories.CustomerAccountRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -23,7 +23,12 @@ import static org.mockito.Mockito.*;
 class CustomerAccountServiceImplTest {
 
     @Mock
+    CustomerAccountCustomerAccountCommandConverterImpl mapper;
+    @Mock
     private CustomerAccountRepository repository;
+
+    @InjectMocks
+    private CustomerAccountServiceImpl service;
 
     @Test
     void listAll() {
@@ -39,9 +44,8 @@ class CustomerAccountServiceImplTest {
             expectedCustomerAccountList.add(account);
         }
 
-        lenient().when(repository.findAll()).thenReturn(expectedCustomerAccountList);
+        when(repository.findAll()).thenReturn(expectedCustomerAccountList);
 
-        CustomerAccountServiceImpl service = new CustomerAccountServiceImpl(null, repository);
         assertEquals(expectedCustomerAccountList, service.listAll());
     }
 
@@ -58,7 +62,6 @@ class CustomerAccountServiceImplTest {
 
         when(repository.findById(any())).thenReturn(Optional.of(expected));
 
-        CustomerAccountServiceImpl service = new CustomerAccountServiceImpl(null, repository);
         assertEquals(expected, service.getById("" + accountId));
     }
 
@@ -72,15 +75,13 @@ class CustomerAccountServiceImplTest {
                 .imageURL("url")
                 .build();
 
-        lenient().when(repository.save(any(CustomerAccount.class))).thenReturn(expectedAccount);
+        when(repository.save(any(CustomerAccount.class))).thenReturn(expectedAccount);
 
-        CustomerAccountService service = new CustomerAccountServiceImpl(null, repository);
         assertEquals(expectedAccount, service.saveOrUpdate(expectedAccount));
     }
 
     @Test
     void saveOrUpdateCustomerAccountCommand() {
-        CustomerAccountCustomerAccountCommandConverter mapper = new CustomerAccountCustomerAccountCommandConverterImpl();
         CustomerAccount expectedAccount = CustomerAccount.builder()
                 .id("1")
                 .login("login")
@@ -96,9 +97,9 @@ class CustomerAccountServiceImplTest {
                 .imageURL("url")
                 .build();
 
-        lenient().when(repository.save(any(CustomerAccount.class))).thenReturn(expectedAccount);
+        when(mapper.commandToModel(any(CustomerAccountCommand.class))).thenReturn(expectedAccount);
+        when(repository.save(any(CustomerAccount.class))).thenReturn(expectedAccount);
 
-        CustomerAccountService service = new CustomerAccountServiceImpl(mapper, repository);
         assertEquals(expectedAccount, service.saveOrUpdateCustomerAccountCommand(inputCommand));
     }
 
@@ -107,7 +108,6 @@ class CustomerAccountServiceImplTest {
         doNothing().when(repository).deleteById(anyString());
 
         final String accountId = "1";
-        CustomerAccountService service = new CustomerAccountServiceImpl(null, repository);
         service.deleteById(accountId);
     }
 }
